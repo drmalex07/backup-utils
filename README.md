@@ -18,3 +18,10 @@ export BACKUP_ROOT=/var/local/backups
 /root/bin/backup-db.sh
 ```
 
+Add a cronjob to fire after daily backups have been created (e.g 1h after the time cron.daily is scanned). Create `/etc/cron.d/exp-latest-backup` as:
+
+```crontab
+# A crontab fragment to export latest backups 
+
+25 7   * * *   root    /root/bin/exp-latest-backup.sh
+```
