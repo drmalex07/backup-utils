@@ -5,7 +5,7 @@
 # ----------------------------------------------------------------------
 
 ROTATION_SIZE=5
-NAME='backup-rotate-dir.sh'
+NAME="$(basename $0)"
 
 #
 # Parse command-line
