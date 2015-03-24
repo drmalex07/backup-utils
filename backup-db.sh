@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ROTATION_SIZE=3
-NAME='backup-db.sh'
+NAME="$(basename $0)"
 
 test -z "${BACKUP_ROOT}" && BACKUP_ROOT="/var/local/backups"
 

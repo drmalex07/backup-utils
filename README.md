@@ -1,6 +1,10 @@
 # backup-utils
 
-A collection of shell backup utilities.
+A collection of rotate-style backup utilities:
+ * `backup-dir.sh`: backup a snapshot of a directory
+ * `backup-db.sh`: backup a snapshot of a MySQL/PostgreSQL database
+
+The generated logs (from all scripts) are directed to syslog under` LOCAL0` facility.
 
 ## Examples
 
@@ -11,11 +15,9 @@ Add a daily cronjob to backup parts of this site. Create `/etc/cron.daily/backup
 
 export BACKUP_ROOT=/var/local/backups
 
-# All logs are directed to syslog under local0 facility
+~root/bin/backup-dir.sh -s /etc -s /var/www -b ${HOSTNAME}/files
 
-/root/bin/backup-dir.sh -s /etc -s /var/www
-
-/root/bin/backup-db.sh
+~root/bin/backup-db.sh -b ${HOSTNAME}/databases
 ```
 
 Add a cronjob to fire after daily backups have been created (e.g 1h after the time cron.daily is scanned). Create `/etc/cron.d/exp-latest-backup` as:

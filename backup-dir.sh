@@ -98,7 +98,7 @@ fi;
 # rsync behaves like cp --remove-destination by default, so the destination
 # is unlinked first.  If it were not so, this would copy over the other
 # snapshot(s) too!
-rsync -avhi --delete ${source_dir} ${backup_dir}/snap.0 ;
+rsync -rlpt -vhi --delete ${source_dir} ${backup_dir}/snap.0 ;
 
 # Step 5: Update the mtime of snap.0 to reflect the snapshot time
 touch ${backup_dir}/snap.0 ;
