@@ -24,7 +24,9 @@ fi;
 source_dir=
 backup_dir=
 
-while getopts "s:b:" option
+rsync_flags='rlpt'
+
+while getopts "s:b:o" option
 do
      case ${option} in
          s)
@@ -40,6 +42,9 @@ do
          b)
              backup_dir=${BACKUP_ROOT}"/"${OPTARG}
              ;;
+         o)  
+             [[ ! $rsync_flags =~ 'o' ]] && rsync_flags="${rsync_flags}og"
+             ;;
          ?)
              echo "Unknown option: ${option}"
              exit 1
@@ -49,8 +54,11 @@ done
 
 if test -z "${source_dir}"
 then
-    echo "Usage:${NAME} [-s <source-dir>]* [-b <backup-dir>]"
-    exit 1
+    echo "Usage:${NAME} [-o] [-s <source-dir>]* [-b <target-dir>]"
+    echo "  -o: preserve ownership (group+owner)"
+    echo "  -s: provide a source directory"
+    echo "  -b: provide a (relative to BACKUP_ROOT) target directory"
+    exit 0
 else
     logger -t ${NAME} -s -p 'local0.info' "Using source(s): ${source_dir}"; 
 fi;
@@ -64,6 +72,9 @@ mkdir -p ${backup_dir}
 backup_dir="$(cd ${backup_dir} && pwd)"
 
 logger -t ${NAME} -s -p 'local0.info' "Using backup_dir: ${backup_dir}"; 
+
+rsync_opts="-${rsync_flags} -vhi --delete"
+logger -t ${NAME} -s -p 'local0.info' "Using rsync options: ${rsync_opts}"; 
 
 #
 # Rotate snapshots and backup
@@ -98,7 +109,7 @@ fi;
 # rsync behaves like cp --remove-destination by default, so the destination
 # is unlinked first.  If it were not so, this would copy over the other
 # snapshot(s) too!
-rsync -rlpt -vhi --delete ${source_dir} ${backup_dir}/snap.0 ;
+rsync ${rsync_opts} ${source_dir} ${backup_dir}/snap.0 ;
 
 # Step 5: Update the mtime of snap.0 to reflect the snapshot time
 touch ${backup_dir}/snap.0 ;
